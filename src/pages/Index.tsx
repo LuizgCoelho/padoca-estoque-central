@@ -4,10 +4,10 @@ import { useToast } from "@/hooks/use-toast";
 import Header from '../components/Header';
 import ProductForm from '../components/ProductForm';
 import ProductList from '../components/ProductList';
+import StatsCards from '../components/StatsCards';
 import { Product, ProductFormData } from '../types/product';
 import { createProduct, calculateInventoryValue, getLowStockProducts } from '../utils/productUtils';
 import { initialProducts } from '../data/initialProducts';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
@@ -63,7 +63,6 @@ const Index = () => {
   };
 
   // Calculate statistics
-  const totalProducts = products.length;
   const totalItems = products.reduce((sum, product) => sum + product.quantity, 0);
   const inventoryValue = calculateInventoryValue(products);
   const lowStockProducts = getLowStockProducts(products);
@@ -73,51 +72,12 @@ const Index = () => {
       <Header productsCount={totalItems} />
       
       <main className="container mx-auto py-6 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                Total de Produtos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalProducts} produtos</div>
-              <div className="text-xs text-muted-foreground">
-                {totalItems} itens em estoque
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                Valor do Estoque
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', { 
-                  style: 'currency', 
-                  currency: 'BRL' 
-                }).format(inventoryValue)}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                Produtos com Estoque Baixo
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{lowStockProducts.length}</div>
-              <div className="text-xs text-muted-foreground">
-                Menos de 10 unidades
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <StatsCards 
+          products={products}
+          totalItems={totalItems}
+          inventoryValue={inventoryValue}
+          lowStockCount={lowStockProducts.length}
+        />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-6">
           <div className="lg:col-span-1">
